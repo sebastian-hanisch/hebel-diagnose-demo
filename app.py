@@ -1,4 +1,4 @@
-"""Hebel und Diagnose – ein Punkt entscheidet: interaktive Konzept-Demo
+"""Hebel und Diagnose: ein Punkt entscheidet (interaktive Konzept-Demo)
 Sebastian Hanisch - Operations Research und Machine Learning
 
 Ein einzelner Punkt kann die Gerade bestimmen, und das rohe Residuum zeigt es nicht (das studentisierte nur teilweise). Hebel, Cook-Abstand und studentisierte Residuen am Anscombe-Quartett, an Handbeispielen in
@@ -84,7 +84,7 @@ def tabelle(rows, spalten_prozent=()):
 # Fester Kopf: nur der Titel bleibt beim Scrollen oben (Stylesheet in hdi_layout.py).
 st.html(L.kopf_css(L.dunkles_design()))
 with st.container(key="kopf"):
-    st.title("🎯 Hebel und Diagnose – ein Punkt entscheidet")
+    st.title("🎯 Hebel und Diagnose: ein Punkt entscheidet")
 st.markdown(
     """
 Ein einzelner Datenpunkt kann die angepasste **Gerade** bestimmen, und am rohen **Residuum** sieht man es ihm nicht an (am studentisierten nur teilweise): Es ist nur der Anteil 1 − h der Abweichung, die man ohne den Punkt
@@ -95,6 +95,17 @@ und Kunden mit nur einem Container. Zähleinheit bei allen Anteilen ist ein **Da
 Weiter unten: **Kernfragen**, die Experimente 2 bis 5, **🚧 Wo die Annahmen enden** und der Expander **📐 Mathematische Formulierung**.
 """
 )
+
+# erklaerseite:einfach:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/hebel-anscombe-erklaert.json, nicht von Hand ändern)
+with st.expander("💬 In einfachen Worten"):
+    st.markdown(
+        """
+Stellen Sie sich Container vor, deren Verweilzeit im Hafen mit dem Vorlauf bis zum Schiff wächst, und eine Gerade, die diesen Zusammenhang beschreibt. Nicht jeder Punkt zählt für diese Gerade gleich viel: Ein Container mit weit abweichendem Vorlauf hat einen großen **Hebel** und zieht sie stärker zu sich. Gerade deshalb liegt er nah an der Geraden, und sein Abstand zu ihr (das **Residuum**) verrät kaum etwas. Der **Cook-Abstand** fragt stattdessen: Wie weit wandert die Gerade, wenn man den Punkt weglässt? Die Demo rechnet das von Hand, am Anscombe-Quartett und an erzeugten Containerdaten durch und zählt, wie oft Faustregeln zu Recht oder zu Unrecht warnen. Die Aussagen gelten für diese Rechenmodelle mit einer einfachen Geraden, nicht für echte Häfen.
+
+[Ausführlich und verständlich erklärt, mit Fachteil](https://sebastianhanisch.net/hebel-anscombe-erklaert.html)
+        """
+    )
+# erklaerseite:einfach:end
 
 with st.expander("So funktioniert die Diagnose von Einflusspunkten", expanded=True):
     st.markdown(
@@ -294,27 +305,34 @@ st.markdown(
 st.markdown("---")
 
 with st.expander("📐 Mathematische Formulierung"):
+    # erklaerseite:lesehilfe:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/hebel-anscombe-erklaert.json, nicht von Hand ändern)
     st.markdown(
         r"""
-**Gegeben** sind Punkte $(x_i, y_i)$, $i = 1, \dots, n$, und die Gerade $y = b_0 + b_1 x$ nach kleinsten Quadraten; **gesucht** sind die Kennzahlen, die zeigen, welcher Punkt die Anpassung bestimmt.
+**Lesehilfe.** Gegeben sind Punkte $(x_i, y_i)$, $i = 1, \dots, n$, und die Gerade $y = b_0 + b_1 x$ nach kleinsten Quadraten. Gesucht sind Kennzahlen, die zeigen, welcher Punkt die Anpassung bestimmt, und wie oft eine Warnschwelle dabei zu Recht oder zu Unrecht anschlägt.
 
 | Symbol | Bedeutung |
 |---|---|
-| $n$ | Zahl der Punkte |
-| $p$ | Zahl der Spalten der Entwurfsmatrix $X$ einschließlich Achsenabschnitt (hier $p = 2$) |
-| $h_i$ | Hebel: $i$-te Diagonale der Hat-Matrix $H = X(X^\top X)^{-1}X^\top$ |
-| $e_i$ | Residuum $y_i - \hat y_i$ |
-| $s^2$ | $\mathrm{SSE}/(n - p)$ |
-| $t_i$, $t_i^*$ | intern bzw. extern studentisiertes Residuum |
-| $D_i$ | Cook-Abstand |
+| $h_i$ | Hebel des Punkts $i$: wie stark sein $y_i$ die Anpassung zieht; hängt nur an $x_i$; bei $h_i = 1$ geht die Gerade durch den Punkt |
+| $e_i$, $\hat y_{(i)}$ | Residuum $y_i - \hat y_i$ und Vorhersage der ohne Punkt $i$ angepassten Geraden |
+| $t_i$, $t_i^*$ | intern bzw. extern studentisiertes Residuum (Residuum geteilt durch $s\sqrt{1 - h_i}$) |
+| $D_i$ | Cook-Abstand: wie weit die Anpassung wandert, wenn Punkt $i$ gelöscht wird (in Einheiten von $p\,s^2$) |
+| $p$, $n$ | Zahl der Spalten der Entwurfsmatrix (hier 2) und Zahl der Punkte |
+| $S_{xx}$ | Summe der quadrierten Abweichungen der $x_i$ von ihrem Mittel $\bar x$ |
+| $n_k$ | Zahl der Container des Kunden $k$ im Faktor-Modell (dort $h_i = 1/n_k$) |
 
-**Hebel.** $h_i = \dfrac{1}{n} + \dfrac{(x_i - \bar x)^2}{S_{xx}}$, $\sum_i h_i = p$, also im Mittel $p/n$. Der Hebel hängt nur an $x$.
+[Schritt für Schritt erklärt, mit Herleitung und Literatur](https://sebastianhanisch.net/hebel-anscombe-erklaert.html#fachleute)
+        """
+    )
+    # erklaerseite:lesehilfe:end
+    st.markdown(
+        r"""
+**Hebel.** $h_i = \dfrac{1}{n} + \dfrac{(x_i - \bar x)^2}{S_{xx}}$, $\sum_i h_i = p$, also im Mittel $p/n$. Der Hebel hängt nur an $x$. Er ist die $i$-te Diagonale der Hat-Matrix $H = X(X^\top X)^{-1}X^\top$ ($X$ die Entwurfsmatrix einschließlich Achsenabschnitt).
 
 **Residuum und Hebel.** $e_i = (1 - h_i)\,(y_i - \hat y_{(i)})$ mit $\hat y_{(i)}$ der Vorhersage der ohne Punkt $i$ angepassten Geraden: das Residuum ist nur der Anteil $1 - h_i$ der Abweichung.
 
-**Studentisiert.** $t_i = \dfrac{e_i}{s\sqrt{1 - h_i}}$ (intern), $t_i^* = t_i\sqrt{\dfrac{n - p - 1}{n - p - t_i^2}}$ (extern, $s$ ohne Punkt $i$ gerechnet).
+**Studentisiert.** Mit $s^2 = \mathrm{SSE}/(n - p)$: $t_i = \dfrac{e_i}{s\sqrt{1 - h_i}}$ (intern), $t_i^* = t_i\sqrt{\dfrac{n - p - 1}{n - p - t_i^2}}$ (extern, $s$ ohne Punkt $i$ gerechnet).
 
-**Cook-Abstand.** $D_i = \dfrac{e_i^2\, h_i}{p\, s^2\,(1 - h_i)^2} = \dfrac{t_i^2}{p}\cdot\dfrac{h_i}{1 - h_i}$ (Cook 1977, Gl. 8); bei $h_i = 1$ ist $D_i = 0/0$ undefiniert. Dasselbe $D_i$ ergibt sich,
+**Cook-Abstand.** $D_i = \dfrac{e_i^2\, h_i}{p\, s^2\,(1 - h_i)^2} = \dfrac{t_i^2}{p}\cdot\dfrac{h_i}{1 - h_i}$ (Cook 1977, Gl. 4 und 8); bei $h_i = 1$ ist $D_i = 0/0$ undefiniert. Dasselbe $D_i$ ergibt sich,
 wenn man den Punkt löscht und neu anpasst: $D_i = \sum_j (\hat y_j - \hat y_{j(i)})^2/(p s^2)$.
 
 **Konventionen und Schwellen** (eine Auswahl, keine Wahrheit):
@@ -340,5 +358,5 @@ st.markdown("---")
 st.caption(
     "Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – "
     "Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). "
-    "Mehr zu den Demos: [Interaktive Demos](https://sebastianhanisch.net/demos.html)."
+    "Mehr zur Reihe: [Regression und GLM: wann die Gleichung trügt](https://sebastianhanisch.net/konzepte-regression.html)."
 )

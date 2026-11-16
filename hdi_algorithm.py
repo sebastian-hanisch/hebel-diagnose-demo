@@ -3,7 +3,7 @@
 Konvention (steht auch im 📐-Expander): p = 2 Spalten (Achsenabschnitt und Steigung), n Punkte.
   Hebel h_i = 1/n + (x_i − x̄)²/Sxx, Spur der Hat-Matrix = p, Mittel der Hebel = p/n.
   s² = SSE/(n − p); intern studentisiert t_i = e_i/(s·√(1 − h_i)); extern t*_i = t_i·√((n − p − 1)/(n − p − t_i²)).
-  Cook-Abstand D_i = e_i² h_i/(p s² (1 − h_i)²) = t_i²/p · h_i/(1 − h_i) (Cook 1977, Gl. 8); bei Hebel 1 undefiniert (0/0).
+  Cook-Abstand D_i = e_i² h_i/(p s² (1 − h_i)²) = t_i²/p · h_i/(1 − h_i) (Cook 1977, Gl. 4 und 8); bei Hebel 1 undefiniert (0/0).
 Undefinierte Werte sind `nan` im Feld (nie `inf`); die Anzeige schreibt dort „undefiniert“. Hebel über 1 − 1e-9 gilt als 1."""
 
 from dataclasses import dataclass

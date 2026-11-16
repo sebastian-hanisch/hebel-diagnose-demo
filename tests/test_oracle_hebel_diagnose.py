@@ -2,7 +2,7 @@
 
 Orakel (jeweils ein anderer Weg als der Code der Demo):
   1. Hebel und Cook-D gegen Löschen und Neuanpassen (numpy.polyfit je ausgelassenem Punkt) in float, 1e-9 relativ; in Brüchen für Anscombe steht es in test_handbeispiele.py.
-  2. Cook = t²/p · h/(1 − h) (Cook 1977, Gl. 8) und e = (1 − h)·(y − ŷ₍ᵢ₎).
+  2. Cook = t²/p · h/(1 − h) (Cook 1977, Gl. 4 und 8) und e = (1 − h)·(y − ŷ₍ᵢ₎).
   3. Hat-Matrix über QR (numpy.linalg.qr): h_i = Σ_j Q_ij², Spur gleich p.
   4. Beta-Orakel: bei normalen, gleich streuenden Fehlern ist t²/(n − p) ~ Beta(1/2, (n − p − 1)/2); daraus die erwartete Zahl Punkte über 4/n; t-Verteilung für |t*| > 3.
   5. Exakte Wahrscheinlichkeit „mindestens ein Kunde mit genau einem Container“ gegen Aufzählung aller Zuordnungen und gegen Simulation (Band).

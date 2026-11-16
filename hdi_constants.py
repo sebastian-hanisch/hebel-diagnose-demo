@@ -107,7 +107,7 @@ PRESET_HELP = {
     "Anscombe Satz IV": "Alle Punkte außer einem haben x = 8; der elfte steht bei x = 19 und hat Hebel genau 1. Wirkt in Experiment 1 (Anscombe).",
     "Halbierter Hebelpunkt (Vorlauf 30)": "Ein Zusatzcontainer mit Vorlauf 30 Tagen (gesetzt, Schiff verschoben) und halber Verweilzeit. Wirkt in Experiment 2.",
     "Hebelpunkt aus demselben Prozess": "Derselbe Zusatzcontainer, aber mit der Verweilzeit, die der Prozess liefert (Faktor 1): ein Hebelpunkt ist kein Fehler. Wirkt in Experiment 2.",
-    "Halbierter Punkt am Rand (Vorlauf 10)": "Halbierter Zusatzcontainer am Rand des beobachteten Vorlaufs: verschiebt die Steigung, schlägt aber bei 5 % Falschalarm kaum an. Wirkt in Experiment 2 und 3.",
+    "Halbierter Punkt am Rand (Vorlauf 10)": "Halbierter Zusatzcontainer am Rand des beobachteten Vorlaufs: verschiebt die Steigung (vorgerechnet im Median um 11,2 %), aber bei 5 % Falschalarm trennt in der Welt „Verweilzeit“ nur das Cook-D schwach (Alarm in 11,8 % der Datensätze), das |t*| gar nicht (4,0 %). Wirkt in Experiment 2 und 3.",
     "Zwei Hebelpunkte": "Zwei halbierte Zusatzcontainer bei Vorlauf 28 und 30: jeder verdeckt den anderen. Wirkt in Experiment 4.",
     "Sauberer Datensatz": "Zusatzcontainer in der Mitte des Vorlaufs mit der Verweilzeit des Prozesses: nichts Besonderes, die Kennzahlen bleiben unauffällig. Wirkt in Experiment 2.",
     "Kunde mit einem Container": "36 Container auf 12 Kunden: wie oft hat mindestens ein Kunde genau einen Container (Hebel 1)? Wirkt in Experiment 5.",

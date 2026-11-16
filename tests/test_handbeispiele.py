@@ -1,6 +1,6 @@
 """Handbeispiele in Brüchen (fractions): jede Zahl ist von Hand gerechnet, nicht aus dem Code der Demo erzeugt; zusätzlich gleicht jeder Test die Rechnung der Demo (hdi_exact) Bruch gleich Bruch ab.
 
-Konvention: p = 2 (Achsenabschnitt und Steigung), Hebel h_i = 1/n + (x_i − x̄)²/Sxx, Cook-D = e² h / (p s² (1 − h)²) mit s² = SSE/(n − p) (Cook 1977, Gl. 8).
+Konvention: p = 2 (Achsenabschnitt und Steigung), Hebel h_i = 1/n + (x_i − x̄)²/Sxx, Cook-D = e² h / (p s² (1 − h)²) mit s² = SSE/(n − p) (Cook 1977, Gl. 4 und 8).
 Die kleine Rechnung hier ist absichtlich ein zweiter Weg (eigene Zeilen statt hdi_exact): sie rechnet die Gerade aus den Normalgleichungen."""
 
 from fractions import Fraction as F
@@ -124,7 +124,7 @@ def test_h2b_cook_formel_gleich_t_quadrat_durch_p_mal_hebel_quotient_und_loesche
     f, base = X.hand_b(0)
     h, e, s2 = f["h"][5], f["e"][5], f["s2"]
     t2 = e ** 2 / (s2 * (1 - h))                                 # intern studentisiert zum Quadrat
-    assert f["D"][5] == t2 / 2 * h / (1 - h)                     # Cook Gl. 8
+    assert f["D"][5] == t2 / 2 * h / (1 - h)                     # Cook Gl. 4 und 8
     assert X.cook_by_deletion(f, 5) == f["D"][5]                 # Löschen und Neuanpassen
     assert (f["b1"] - base["b1"]) ** 2 / base["se1_sq"] == 3     # Verschiebung der Steigung: √3 Standardfehler der Basis
 

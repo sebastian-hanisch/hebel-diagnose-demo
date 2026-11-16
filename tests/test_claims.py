@@ -244,6 +244,60 @@ def test_korrekturen_zahlen_dieser_demo():
     assert 42.9 <= 100 * _row("Normal", 10.0, 0.5)["alarm_D"] <= 45.8 and 15.1 <= 100 * _row("Normal", 10.0, 0.5)["alarm_T"] <= 17.2     # innerhalb der früheren Spanne
 
 
+def test_tabelle_1_und_5_gleiche_einstellung_nur_anderer_zufalls_seed():
+    """README B6: Zeile Vorlauf 30, Faktor 0,5 (Tabelle 1) und „Punkt bei 30 allein“ (Tabelle 5) sind zwei Stichproben derselben Einstellung."""
+    import hdi_measure as M
+    r1 = _row("Verweilzeit", 30.0, 0.5)
+    e5 = FROZEN["d"]["einzeln"]
+    assert (C.SEED_B_VZ, C.SEED_D) == (1101, 1103) and C.R_FROZEN_B == C.R_FROZEN_D == 4000 and FROZEN["d"]["n"] == C.N_FROZEN == 30
+    paare = [(r1["med_h"], e5["med_h"][0], 3), (r1["med_D"], e5["med_D"][0], None), (r1["med_t_ext"], e5["med_t_ext"][0], 2),
+             (100 * r1["share_df50"], 100 * e5["df50_einer"], 1), (100 * r1["med_rel"], 100 * e5["med_rel"], 1), (r1["med_e_s"], e5["med_e_s_v2"], 2)]
+    assert ev.de(paare[0][0], 3) == "0,758" and ev.de(paare[0][1], 3) == "0,756"
+    assert (ev.de(r1["med_D"], 3), ev.de(e5["med_D"][0], 2)) == ("17,488", "17,45")
+    assert [ev.de(a, nd) for a, b, nd in paare[2:]] == ["4,24", "98,7", "−49,0", "1,63"] and [ev.de(b, nd) for a, b, nd in paare[2:]] == ["4,23", "98,6", "−48,7", "1,65"]
+    _has("Hebel 0,758 und 0,756, Cook-D 17,488 und 17,45, t* 4,24 und 4,23, Cook über F(.5) 98,7 und 98,6 %, Steigung −49,0 und −48,7 %, Residuum/s 1,63 und 1,65",
+         "Tabelle 1 rechnet mit dem Zufalls-Seed 1101, Tabelle 5 mit 1103", "Spalte n + 1 statt n", "Die Abstände liegen unter den Spannen aus B8")
+    assert abs(r1["share_df50"] - e5["df50_einer"]) <= 0.033                                                                # Spannen aus B8 (Anteile 3,3 Prozentpunkte, Mediane 12,4 %)
+    for a, b in ((r1["med_h"], e5["med_h"][0]), (r1["med_D"], e5["med_D"][0]), (r1["med_t_ext"], e5["med_t_ext"][0]), (r1["med_rel"], e5["med_rel"]), (r1["med_e_s"], e5["med_e_s_v2"])):
+        assert abs(a - b) / max(abs(a), abs(b)) <= 0.124
+    gleich = M.messung_b("Verweilzeit", C.SEED_D, C.R_FROZEN_B, C.N_FROZEN, [30.0], [0.5], None)[0]
+    assert math.isclose(gleich["med_h"], e5["med_h"][0], rel_tol=1e-12)                                                     # gleicher Zufalls-Seed: gleicher Hebel (hängt nur an x)
+    _has("die Zeile aus Tabelle 1 mit dem Zufalls-Seed 1103 gerechnet ergibt ebenfalls 0,756", "Tabelle 5 in B6 nennt für dieselbe Einstellung −48,7 %")
+
+
+def test_b5_zahl_der_punkte_ist_nicht_anteil_der_datensaetze():
+    cn = FROZEN["c"]["Normal"]
+    assert ev.pct(cn["t3"]) == "17,2 %" and ev.de(cn["mean_count_t3"], 3) == "0,176"
+    assert 0.0 <= cn["mean_count_t3"] - cn["t3"] < 0.01                                                                     # Datensätze mit zwei oder mehr Punkten über 3 sind selten
+    _has("**Zahl der Punkte** über der Schwelle je Datensatz", "nicht der **Anteil der Datensätze** mit mindestens einem solchen Punkt (17,2 % in der Tabelle)", "zwei verschiedene Größen")
+
+
+def test_kundeneffekte_stehen_in_der_readme():
+    assert len(C.UK) == 12
+    _has("; ".join(ev.de(u, 4) for u in C.UK), "hier auf vier Stellen gerundet, der Code rechnet mit allen Stellen in `hdi_constants.py`")
+    assert round(sum(math.exp(0.3 * u) for u in C.UK) / 12 * math.exp(0.25 ** 2 / 2), 3) == 1.029                          # E[d | v] = 1,029·(0,6 + 0,85·v) gilt für genau diese Liste
+
+
+def test_vorlauf_erklaert_titel_und_quellenangabe():
+    _has("**Vorlauf** heißt die Zahl der Tage bis zur Schiffsabfahrt")
+    assert README.splitlines()[0] == "# Hebel und Diagnose: ein Punkt entscheidet – Streamlit-Demo"
+    app = (ROOT / "app.py").read_text(encoding="utf-8")
+    assert 'st.title("🎯 Hebel und Diagnose: ein Punkt entscheidet")' in app
+    _has("(Cook 1977, Technometrics 19(1), 15–18, Gl. 4 und 8)")
+    assert "(Cook 1977, Gl. 4 und 8)" in app and "Gl. 8)" not in app.replace("Gl. 4 und 8)", "")                             # README und App zitieren dieselben Gleichungen
+    assert app.count("| Symbol | Bedeutung |") == 1 and "**Gegeben** sind Punkte" not in app                                 # Lesehilfe aus der Erklärseite ersetzt den älteren Absatz
+    assert "s^2 = \\mathrm{SSE}/(n - p)" in app and "X(X^\\top X)^{-1}X^\\top" in app                                         # Definitionen aus der gestrichenen Tabelle bleiben in den Formeln
+
+
+def test_preset_hilfe_randpunkt_nennt_die_gemessenen_alarmraten():
+    """Preset „Halbierter Punkt am Rand (Vorlauf 10)“: Hilfetext gleich README B4 (Cook 11,8 %, t* 4,0 %, Steigung 11,2 %)."""
+    hilfe = C.PRESET_HELP["Halbierter Punkt am Rand (Vorlauf 10)"]
+    r10 = _row("Verweilzeit", 10.0, 0.5)
+    for text in (ev.pct(r10["alarm_D"]), ev.pct(r10["alarm_T"]), ev.pct(abs(r10["med_rel"]))):
+        assert text in hilfe, text
+    assert "kaum an" not in hilfe and "schwach" in hilfe
+
+
 def test_readme_nennt_keine_planungswoerter():
-    for wort in ("Stück", "Linie", "Vormessung", "Phase 0", "Plan Z", "geplant", "trägt", "läuft lokal", "Saatwert"):
+    for wort in ("Stück", "Linie", "Vormessung", "Phase 0", "Plan Z", "geplant", "trägt", "läuft lokal", "Saatwert", "Planung", "Vorarbeit", "out_rn_"):
         assert wort not in README, wort
