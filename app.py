@@ -1,7 +1,7 @@
 """Hebel und Diagnose – ein Punkt entscheidet: interaktive Konzept-Demo
 Sebastian Hanisch - Operations Research und Machine Learning
 
-Ein einzelner Punkt kann die Gerade bestimmen, und das Residuum zeigt es nicht. Hebel, Cook-Abstand und studentisierte Residuen am Anscombe-Quartett, an Handbeispielen in
+Ein einzelner Punkt kann die Gerade bestimmen, und das rohe Residuum zeigt es nicht (das studentisierte nur teilweise). Hebel, Cook-Abstand und studentisierte Residuen am Anscombe-Quartett, an Handbeispielen in
 Brüchen und an der Verweilzeit von Export-Containern; Aufbau und Regeln stehen im DEMO-PLAYBOOK.md (§2).
 
 Lauffähig mit: streamlit run app.py
@@ -87,7 +87,7 @@ with st.container(key="kopf"):
     st.title("🎯 Hebel und Diagnose – ein Punkt entscheidet")
 st.markdown(
     """
-Ein einzelner Datenpunkt kann die angepasste **Gerade** bestimmen, und am **Residuum** sieht man es ihm nicht an: Es ist nur der Anteil 1 − h der Abweichung, die man ohne den Punkt
+Ein einzelner Datenpunkt kann die angepasste **Gerade** bestimmen, und am rohen **Residuum** sieht man es ihm nicht an (am studentisierten nur teilweise): Es ist nur der Anteil 1 − h der Abweichung, die man ohne den Punkt
 gesehen hätte, wobei **h** der **Hebel** des Punkts ist. Die Demo rechnet das zuerst von Hand in Brüchen (sechs Punkte, Anscombe-Quartett), dann an der Verweilzeit von
 Export-Containern: ein Zusatzcontainer mit weitem Vorlauf, die Faustregel **4/n** für den Cook-Abstand und was sie bei sauberen Daten zählt, zwei Hebelpunkte, die sich gegenseitig verdecken,
 und Kunden mit nur einem Container. Zähleinheit bei allen Anteilen ist ein **Datensatz** (eine Wiederholung).

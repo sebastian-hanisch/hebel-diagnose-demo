@@ -118,7 +118,7 @@ def verdict_hand(f: dict, base: dict) -> tuple[str, str]:
     ratio = math.sqrt(f["se1_sq"] / base["se1_sq"])
     if e6 == 0 and f["b1"] == base["b1"]:
         return "success", (f"Der sechste Punkt (x = 6, y = {bruch(y6)}) liegt auf der Geraden der ersten fünf: Die Gerade bleibt {gerade(f['b0'], f['b1'])}, Residuum 0, Cook-D 0. "
-                           f"Der Standardfehler der Steigung sinkt auf {de(ratio, 3)} des Wertes ohne diesen Punkt: ein Hebelpunkt, der zur Geraden passt, macht sie genauer.")
+                           f"Der Standardfehler der Steigung sinkt auf {de(ratio, 3)} des Wertes ohne diesen Punkt: in diesem Beispiel macht ein Hebelpunkt, der zur Geraden passt, die Gerade genauer.")
     andere = max(f["D"][i] for i in range(5))
     rang = 1 + sum(1 for v in f["e"] if abs(v) > abs(e6))
     dr = X.loeschresiduum(f, 5)

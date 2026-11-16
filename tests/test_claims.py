@@ -214,6 +214,21 @@ def test_b8_stabilitaet_mit_vier_anderen_zufalls_seeds():
     _has("Anteile ±4 Prozentpunkte, Mediane ±15 %")
 
 
+def test_b8_steigungs_mediane_bei_faktor_1_ueber_fuenf_laeufe():
+    """README B8: Steigung bei Faktor 1 über die Datei und vier Zufalls-Seed-Versätze (Welt Verweilzeit, 4000 Datensätze, ohne 5-%-Schwellen)."""
+    import hdi_measure as M
+    vz = "Verweilzeit"
+    werte = {10.0: [], 15.0: [], 30.0: []}
+    for versatz in (0, 3000, 7000, 11000, 20000):
+        rows = M.messung_b(vz, Z.SEEDS_B[vz] + versatz, C.R_FROZEN_B, C.N_FROZEN, C.V_ALARM_WERTE, C.F_ALARM_WERTE, None)
+        for r in rows:
+            if r["f"] == 1.0 and r["v"] in werte:
+                werte[r["v"]].append(100 * r["med_rel"])
+    spannen = {v: (ev.de(max(w), 1), ev.de(min(w), 1)) for v, w in werte.items()}
+    assert spannen == {10.0: ("−0,7", "−1,0"), 15.0: ("−1,5", "−2,2"), 30.0: ("−2,5", "−4,0")}
+    _has("Vorlauf 10 von −0,7 bis −1,0 %", "Vorlauf 15 von −1,5 bis −2,2 %", "Vorlauf 30 von −2,5 bis −4,0 %")
+
+
 # --- B9 und Berichtigungen ------------------------------------------------------------------------------------------------------------------------
 
 def test_korrekturen_zahlen_dieser_demo():
